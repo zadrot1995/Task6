@@ -15,13 +15,24 @@ namespace Task6
 
         private static ApplicationState instance;
 
-        private ApplicationState()
-        { }
+        private static object syncRoot = new Object();
 
-        public static ApplicationState getInstance()
+        protected ApplicationState(int LoginId, int MaxSize)
+        {
+            this.LoginId = LoginId;
+            this.MaxSize = MaxSize;
+        }
+
+        public static ApplicationState getInstance(int LoginId, int MaxSize)
         {
             if (instance == null)
-                instance = new ApplicationState();
+            {
+                lock (syncRoot)
+                {
+                    if (instance == null)
+                        instance = new ApplicationState(LoginId, MaxSize);
+                }
+            }
             return instance;
         }
     }
